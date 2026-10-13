@@ -514,6 +514,7 @@ const PRODUCTS_DATA = {
 /* ЦВЕТА */
 const PROF_COLORS = ['Оцинкованный', 'Графит', 'Светло-серый', 'Коричневый', 'Зеленый', 'Бежевый', 'Синий', 'Свой вариант'];
 const THREE_COLORS = ['Желтый', 'Коричневый', 'Бесцветный'];
+
 /* ВСЕ 17 ПЛАНИРОВОК */
 const PLANS = [
   { id: 'plan_0', name: 'Без планировки', num: 'HET', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#94a3b8" stroke-width="2"/><text x="100" y="45" text-anchor="middle" font-size="10" fill="#94a3b8">HET</text><text x="100" y="62" text-anchor="middle" font-size="11" font-weight="600" fill="#64748b">Без планировки</text>' },
@@ -542,7 +543,7 @@ const EXTRA_CATEGORIES = [
     catName: 'Окна и ставни',
     items: [
       { id: 'win_none', name: 'Без окон', price: 0 },
-      { id: 'win_wood_extra', name: 'Окно деревянное дополнительное', price: 4000 },
+      { id: 'win_wood_extra', name: 'Окно деревянное дополнительное (75х75)', price: 4000 },
       { id: 'win_wood_50', name: 'Окно деревянное 50х50', price: 3000 },
       { id: 'win_pvc_50', name: 'Окно ПВХ 50х50 поворотное', price: 6000 },
       { id: 'win_pvc_90', name: 'Окно ПВХ 90х60 поворотно-откидное', price: 10000 },
@@ -611,13 +612,13 @@ const EXTRA_CATEGORIES = [
     items: [
       { id: 'roof_colored', name: 'Крыша цветная (не оцинкованная)', price: 4000 },
       { id: 'roof_slope_length', name: 'Крыша скат по длине', price: 12000 },
-      { id: 'veranda_pm', name: 'Веранда за 1 погонный метр', price: 14000 },
-      { id: 'veranda_pm_podshiv', name: 'Веранда за 1 пог. метр с подшивом', price: 17000 },
-      { id: 'veranda_imit_pm', name: 'Веранда Имитация за 1 погонный метр', price: 16000 },
-      { id: 'veranda_imit_podshiv', name: 'Веранда Имитация за 1 пог. метр с подшивом', price: 19000 },
+      { id: 'veranda_pm', name: 'Веранда за 1 погонный метр', price: 14000, onlyWood: true },
+      { id: 'veranda_pm_podshiv', name: 'Веранда за 1 пог. метр с подшивом', price: 17000, onlyWood: true },
+      { id: 'veranda_imit_pm', name: 'Веранда Имитация за 1 погонный метр', price: 16000, onlyWood: true },
+      { id: 'veranda_imit_podshiv', name: 'Веранда Имитация за 1 пог. метр с подшивом', price: 19000, onlyWood: true },
       { id: 'join_modules_wood', name: 'Соединение модулей', price: 24000 },
       { id: 'join_modules_bk', name: 'Соединение модулей БК', price: 30000 },
-      { id: 'assembly_site', name: 'Сборка на участке', price: 25000 }
+      { id: 'assembly_site', name: 'Сборка на участке', price: 0 }
     ]
   },
   {
@@ -649,7 +650,7 @@ let state = {
   selectedPlan: 'plan_0',
   showAllPlans: false,
   frameType: 'frame_50',
-  innerChoice: 'in_org', // Оргалит по умолчанию
+  innerChoice: 'in_org',
   outerChoice: 'prof',
   insulation: 'ins50',
   profColor: 'Оцинкованный',
@@ -707,8 +708,8 @@ function getExtraPrice(id, defaultPrice) {
     if (state.selectedSize.includes('_3')) return 7000;
     return 7000;
   }
-  if (id === 'assembly_site' && PRODUCTS_DATA[state.selectedSize].type === 'bk') {
-    return -1; // специальный маркер для сборки БК
+  if (id === 'assembly_site') {
+    return -1; // Динамический расчет: 27% от отделки снаружи для дерева, 50% от бытовки для БК
   }
   return defaultPrice;
 }
@@ -723,12 +724,16 @@ function onSizeChanged() {
   state.customPrices = {};
   state.frameType = 'frame_50';
   state.outerChoice = 'prof';
-  state.innerChoice = 'in_org'; // Оргалит по умолчанию при смене размера
+  state.innerChoice = 'in_org';
   
   const isBk = PRODUCTS_DATA[state.selectedSize].type === 'bk';
   if (isBk) {
     delete state.extrasChecked['height_increase'];
     delete state.extrasQty['height_increase'];
+    ['veranda_pm', 'veranda_pm_podshiv', 'veranda_imit_pm', 'veranda_imit_podshiv'].forEach(k => {
+      delete state.extrasChecked[k];
+      delete state.extrasQty[k];
+    });
   }
   renderDynamicOptions();
   updateKP();
@@ -736,12 +741,10 @@ function onSizeChanged() {
 
 function onRaspashonkaChange(checked) {
   state.isRaspashonka = checked;
-  // Если выбрали распашонку - добавляем окно
   if (checked) {
     state.extrasChecked['win_wood_extra'] = true;
     state.extrasQty['win_wood_extra'] = Math.max(state.extrasQty['win_wood_extra'] || 1, 1);
   } else {
-    // Если сняли распашонку - убираем дополнительное окно
     if (state.extrasChecked['win_wood_extra'] && state.extrasQty['win_wood_extra'] === 1) {
       delete state.extrasChecked['win_wood_extra'];
     }
@@ -946,7 +949,8 @@ function renderDynamicOptions() {
     let catHtml = `<div class="extra-category-title">${cat.catName}</div>`;
     cat.items.forEach(srv => {
       const isHeightOpt = srv.id === 'height_increase';
-      const isDisabled = isBk && isHeightOpt;
+      const isVerandaBk = isBk && srv.onlyWood;
+      const isDisabled = (isBk && isHeightOpt) || isVerandaBk;
       const isChecked = !isDisabled && !!state.extrasChecked[srv.id];
       const qty = state.extrasQty[srv.id] !== undefined ? state.extrasQty[srv.id] : 1;
       
@@ -955,15 +959,18 @@ function renderDynamicOptions() {
       let inputHtml = '';
       
       if (isDynamicAssembly) {
-        inputHtml = `<input type="text" class="price-custom-input hideable-price" value="50% от суммы" disabled style="width:100px;">`;
+        let labelDynamic = isBk ? '50% от суммы' : '27% от отделки';
+        inputHtml = `<input type="text" class="price-custom-input hideable-price" value="${labelDynamic}" disabled style="width:105px;">`;
       } else {
         const priceVal = getP(srv.id, defaultP);
         inputHtml = `<input type="number" class="price-custom-input hideable-price" value="${priceVal}" ${isDisabled ? 'disabled' : ''} oninput="setCustomPrice('${srv.id}', this.value)">`;
       }
 
-      const labelText = isDisabled 
-        ? `${srv.name} <span style="color:#64748b; font-size:11px;">[Не требуется для БК]</span>` 
-        : srv.name;
+      let labelText = srv.name;
+      if (isDisabled) {
+        if (isHeightOpt) labelText += ` <span style="color:#64748b; font-size:11px;">[Не требуется для БК]</span>`;
+        if (isVerandaBk) labelText += ` <span style="color:#64748b; font-size:11px;">[Недоступно для БК]</span>`;
+      }
 
       catHtml += `
         <div class="option-row ${isDisabled ? 'disabled' : ''}">
@@ -982,7 +989,6 @@ function renderDynamicOptions() {
     extraBox.innerHTML += catHtml;
   });
 }
-
 function onInsulationChange(mode) {
   state.insulation = mode;
   if (mode === 'rock50') {
@@ -1099,7 +1105,6 @@ function updateKP() {
   const tbody = document.getElementById('kp_table_body');
   tbody.innerHTML = '';
 
-  // Обновляем текущую дату в бланке КП
   document.getElementById('kp_out_date').textContent = getTodayString();
 
   let equipmentTotal = 0;
@@ -1160,11 +1165,12 @@ function updateKP() {
   }
   const innerDesc = innerTpl.name;
 
-  // Считаем допы
+  // Допы (кроме сборки и окон 75х75)
   const chosenFeaturesList = [];
   ALL_EXTRAS.forEach(srv => {
     if (srv.id === 'height_increase' && isBk) return;
-    if (srv.id === 'assembly_site') return; 
+    if (srv.id === 'assembly_site') return;
+    if (srv.id === 'win_wood_extra') return; // обрабатываем отдельно с базовым окном
     if (state.extrasChecked[srv.id]) {
       const q = state.extrasQty[srv.id] || 1;
       chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> ${srv.name} — ${q} шт.`);
@@ -1172,13 +1178,22 @@ function updateKP() {
     }
   });
 
-  // Расчет сборки
+  // Расчет окон 75х75: если выбрано доп. окно — суммируем с базовым в ОДНУ строку в особенности
+  const hasExtraWoodWin = !!state.extrasChecked['win_wood_extra'];
+  const extraWoodWinQty = hasExtraWoodWin ? (state.extrasQty['win_wood_extra'] || 1) : 0;
+  if (hasExtraWoodWin) {
+    equipmentTotal += getP('win_wood_extra', 4000) * extraWoodWinQty;
+    const totalWoodWins = 1 + extraWoodWinQty;
+    chosenFeaturesList.unshift(`<span style="color:red; font-weight:bold;">❗</span> Окно 75х75 см деревянное с двойным остеклением — ${totalWoodWins} шт.`);
+  }
+
+  // Расчет сборки на участке: 27% от отделки снаружи для деревянных, 50% от суммы для БК
   let assemblyPrice = 0;
   if (state.extrasChecked['assembly_site']) {
     if (isBk) {
       assemblyPrice = Math.round(equipmentTotal * 0.5);
     } else {
-      assemblyPrice = getP('assembly_site', getExtraPrice('assembly_site', 25000));
+      assemblyPrice = Math.round(baseCost * 0.27);
     }
     equipmentTotal += assemblyPrice;
     chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Сборка на участке — 1 шт.`);
@@ -1194,12 +1209,14 @@ function updateKP() {
     `;
   }
 
-  // Окна
+  // Окна в базовой комплектации
   let hasPVC = state.extrasChecked['win_pvc_50'] || state.extrasChecked['win_pvc_90'] || state.extrasChecked['win_pvc_100'];
   let noWindows = state.extrasChecked['win_none'];
   let windowText = "";
   if (noWindows) {
       windowText = "Без окон";
+  } else if (hasExtraWoodWin) {
+      windowText = "Вынесены в особенности комплектации";
   } else if (hasPVC) {
       windowText = "ПВХ (согласно выбранным допам)";
   } else {
@@ -1409,7 +1426,8 @@ function rebuildModalText() {
   const getP = (key, defaultP) => (state.customPrices[key] !== undefined ? state.customPrices[key] : defaultP);
   
   // База от СНАРУЖИ
-  let equipmentTotal = getP('out_' + state.outerChoice, prod.outerPrices[state.outerChoice]);
+  const baseCost = getP('out_' + state.outerChoice, prod.outerPrices[state.outerChoice]);
+  let equipmentTotal = baseCost;
 
   // Каркас
   if (!isBk && state.frameType === 'frame_100') {
@@ -1435,14 +1453,21 @@ function rebuildModalText() {
   ALL_EXTRAS.forEach(srv => {
     if (srv.id === 'height_increase' && isBk) return;
     if (srv.id === 'assembly_site') return;
+    if (srv.id === 'win_wood_extra') return;
     if (state.extrasChecked[srv.id]) {
       const q = state.extrasQty[srv.id] || 1;
       equipmentTotal += getP(srv.id, getExtraPrice(srv.id, srv.price)) * q;
     }
   });
 
+  const hasExtraWoodWin = !!state.extrasChecked['win_wood_extra'];
+  const extraWoodWinQty = hasExtraWoodWin ? (state.extrasQty['win_wood_extra'] || 1) : 0;
+  if (hasExtraWoodWin) {
+    equipmentTotal += getP('win_wood_extra', 4000) * extraWoodWinQty;
+  }
+
   if (state.extrasChecked['assembly_site']) {
-    let assemblyPrice = isBk ? Math.round(equipmentTotal * 0.5) : getP('assembly_site', getExtraPrice('assembly_site', 25000));
+    let assemblyPrice = isBk ? Math.round(equipmentTotal * 0.5) : Math.round(baseCost * 0.27);
     equipmentTotal += assemblyPrice;
   }
 
@@ -1470,7 +1495,16 @@ function rebuildModalText() {
   let text = '';
   let hasPVC = state.extrasChecked['win_pvc_50'] || state.extrasChecked['win_pvc_90'] || state.extrasChecked['win_pvc_100'];
   let noWindows = state.extrasChecked['win_none'];
-  let windowText = noWindows ? "Без окон" : (hasPVC ? "ПВХ (согласно выбранным допам)" : "75х75 см деревянное с двойным остеклением (1 шт.)");
+  let windowText = "";
+  if (noWindows) {
+    windowText = "Без окон";
+  } else if (hasExtraWoodWin) {
+    windowText = "Вынесены в особенности комплектации";
+  } else if (hasPVC) {
+    windowText = "ПВХ (согласно выбранным допам)";
+  } else {
+    windowText = "75х75 см деревянное с двойным остеклением (1 шт.)";
+  }
 
   let insulText = (state.insulation === 'rock50') ? 'Каменная вата (плитами) 50 мм' : ((state.insulation === 'ins100') ? '100 мм' : '50 мм');
   if (state.innerChoice === 'in_none') insulText = 'Без утепления';
@@ -1514,8 +1548,12 @@ function rebuildModalText() {
     }
 
     let extrasList = [];
+    if (hasExtraWoodWin) {
+      extrasList.push(`❗ Окно 75х75 см деревянное с двойным остеклением — ${1 + extraWoodWinQty} шт.`);
+    }
     ALL_EXTRAS.forEach(s => {
       if (s.id === 'height_increase' && isBk) return;
+      if (s.id === 'win_wood_extra') return;
       if (state.extrasChecked[s.id]) {
         extrasList.push(`❗ ${s.name} — ${state.extrasQty[s.id] || 1} шт.`);
       }
@@ -1526,7 +1564,7 @@ function rebuildModalText() {
 
     text += `В комплекте:\n- фундаментные блоки 20х20х40 см — ${prod.blocksGift} шт.\n- ступени для входа\n`;
     if (state.deliveryRegion === 'ovrazhki') {
-      text += `- электрика: розетка, выключатель, патрон и провод\n`;
+      text += `- электрика: розетка, выключатель, патрон и провод (без подключения)\n`;
     }
     text += `\n`;
 
@@ -1576,8 +1614,12 @@ function rebuildModalText() {
     }
 
     let extrasList = [];
+    if (hasExtraWoodWin) {
+      extrasList.push(`❗ Окно 75х75 см деревянное с двойным остеклением — ${1 + extraWoodWinQty} шт.`);
+    }
     ALL_EXTRAS.forEach(s => {
       if (s.id === 'height_increase' && isBk) return;
+      if (s.id === 'win_wood_extra') return;
       if (state.extrasChecked[s.id]) {
         extrasList.push(`❗ ${s.name} — ${state.extrasQty[s.id] || 1} шт.`);
       }
@@ -1588,7 +1630,7 @@ function rebuildModalText() {
 
     text += `В комплекте:\n- фундаментные блоки 20х20х40 см — ${prod.blocksGift} шт.\n- ступени для входа\n`;
     if (state.deliveryRegion === 'ovrazhki') {
-      text += `- электрика: розетка, выключатель, патрон и провод\n`;
+      text += `- электрика: розетка, выключатель, патрон и провод (без подключения)\n`;
     }
     text += `\n`;
 
