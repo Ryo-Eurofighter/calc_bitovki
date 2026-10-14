@@ -483,31 +483,31 @@ const PRODUCTS_DATA = {
     name: 'Блок-контейнер 3 х 2.4 м', innerDim: '2,8 х 2,2 м', type: 'bk', blocksGift: 4, frameUpgradePrice: 0,
     outerPrices: { prof: 109000 },
     innerPricesMap: { org_in: 0, none_in: -4000, osb_in: 13000, vagC_in: 12000, vagB_in: 33000, imit_in: 20000, mdf_in: 22000 },
-    insulationPrices: { ins50: 0, rock50: 15000 }
+    insulationPrices: { ins50: 0, ins100: 15000, rock50: 15000 }
   },
   bk_4: {
     name: 'Блок-контейнер 4 х 2.4 м', innerDim: '3,8 х 2,2 м', type: 'bk', blocksGift: 4, frameUpgradePrice: 0,
     outerPrices: { prof: 114000 },
     innerPricesMap: { org_in: 0, none_in: -4000, osb_in: 13000, vagC_in: 15000, vagB_in: 38000, imit_in: 24000, mdf_in: 26000 },
-    insulationPrices: { ins50: 0, rock50: 18000 }
+    insulationPrices: { ins50: 0, ins100: 16000, rock50: 18000 }
   },
   bk_5: {
     name: 'Блок-контейнер 5 х 2.4 м', innerDim: '4,8 х 2,2 м', type: 'bk', blocksGift: 6, frameUpgradePrice: 0,
     outerPrices: { prof: 119000 },
     innerPricesMap: { org_in: 0, none_in: -4000, osb_in: 17000, vagC_in: 21000, vagB_in: 46000, imit_in: 28000, mdf_in: 34000 },
-    insulationPrices: { ins50: 0, rock50: 22000 }
+    insulationPrices: { ins50: 0, ins100: 18000, rock50: 22000 }
   },
   bk_6: {
     name: 'Блок-контейнер 5.85 х 2.4 х 2.4 м', innerDim: '5,65 х 2,2 м', type: 'bk', blocksGift: 6, frameUpgradePrice: 0,
     outerPrices: { prof: 124000 },
     innerPricesMap: { org_in: 0, none_in: -4000, osb_in: 18000, vagC_in: 22000, vagB_in: 50000, imit_in: 31000, mdf_in: 40000 },
-    insulationPrices: { ins50: 0, rock50: 24000 }
+    insulationPrices: { ins50: 0, ins100: 19000, rock50: 24000 }
   },
   bk_7: {
     name: 'Блок-контейнер 7 х 2.4 м', innerDim: '6,8 х 2,2 м', type: 'bk', blocksGift: 8, frameUpgradePrice: 0,
     outerPrices: { prof: 151000 },
     innerPricesMap: { org_in: 0, none_in: -4000, osb_in: 23000, vagC_in: 23000, vagB_in: 58000, imit_in: 33000, mdf_in: 40000 },
-    insulationPrices: { ins50: 0, rock50: 30000 }
+    insulationPrices: { ins50: 0, ins100: 23000, rock50: 30000 }
   }
 };
 
@@ -672,6 +672,16 @@ function getTodayString() {
   const d = new Date();
   const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} г.`;
+}
+
+/* Вспомогательный расчет стоимости утепления 100 мм */
+function getDefaultIns100Price(prod) {
+  if (prod.insulationPrices && prod.insulationPrices.ins100 !== undefined) {
+    return prod.insulationPrices.ins100;
+  }
+  const getP = (key, defaultP) => (state.customPrices[key] !== undefined ? state.customPrices[key] : defaultP);
+  const baseOutPrice = getP('out_' + state.outerChoice, prod.outerPrices[state.outerChoice]);
+  return Math.round(baseOutPrice * 0.2);
 }
 
 function init() {
@@ -864,9 +874,8 @@ function renderDynamicOptions() {
     `;
   });
 
-  // Утепление (100 мм - 20% от наружной базы)
-  const baseOutPrice = getP('out_' + state.outerChoice, prod.outerPrices[state.outerChoice]);
-  const calcIns100Price = Math.round(baseOutPrice * 0.2);
+  // Утепление
+  const calcIns100Price = getDefaultIns100Price(prod);
   const insBox = document.getElementById('insulation_options');
   
   insBox.innerHTML = `
@@ -989,6 +998,7 @@ function renderDynamicOptions() {
     extraBox.innerHTML += catHtml;
   });
 }
+
 function onInsulationChange(mode) {
   state.insulation = mode;
   if (mode === 'rock50') {
@@ -1141,7 +1151,7 @@ function updateKP() {
   let insulDesc = '50 мм минеральной ватой';
   
   if (state.insulation === 'ins100') {
-    const calcIns100Price = Math.round(prod.outerPrices[state.outerChoice] * 0.2);
+    const calcIns100Price = getDefaultIns100Price(prod);
     insulCost = getP('ins100', calcIns100Price);
     insulDesc = '100 мм минеральной ватой';
   } else if (state.insulation === 'rock50') {
@@ -1165,18 +1175,23 @@ function updateKP() {
   }
   const innerDesc = innerTpl.name;
 
-  // Допы (кроме сборки и окон 75х75)
+  // Сбор списка особенностей комплектации (включая замену отделки, каркаса, утепления и распашонку)
   const chosenFeaturesList = [];
-  ALL_EXTRAS.forEach(srv => {
-    if (srv.id === 'height_increase' && isBk) return;
-    if (srv.id === 'assembly_site') return;
-    if (srv.id === 'win_wood_extra') return; // обрабатываем отдельно с базовым окном
-    if (state.extrasChecked[srv.id]) {
-      const q = state.extrasQty[srv.id] || 1;
-      chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> ${srv.name} — ${q} шт.`);
-      equipmentTotal += getP(srv.id, getExtraPrice(srv.id, srv.price)) * q;
-    }
-  });
+
+  if (document.getElementById('is_raspashonka') && document.getElementById('is_raspashonka').checked) {
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Планировка: РАСПАШОНКА`);
+  }
+  if (!isBk && state.frameType === 'frame_100') {
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Каркас: 100х50 из бруса (усиленный)`);
+  }
+  if (state.innerChoice !== 'in_org') {
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Внутренняя отделка: ${innerTpl.name}`);
+  }
+  if (state.insulation === 'ins100' && state.innerChoice !== 'in_none') {
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Утепление: 100 мм минеральной ватой (пол, стены, потолок)`);
+  } else if (state.insulation === 'rock50' && state.innerChoice !== 'in_none') {
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Утепление: Каменная вата (плитами) 50 мм (пол, стены, потолок)`);
+  }
 
   // Расчет окон 75х75: если выбрано доп. окно — суммируем с базовым в ОДНУ строку в особенности
   const hasExtraWoodWin = !!state.extrasChecked['win_wood_extra'];
@@ -1184,8 +1199,20 @@ function updateKP() {
   if (hasExtraWoodWin) {
     equipmentTotal += getP('win_wood_extra', 4000) * extraWoodWinQty;
     const totalWoodWins = 1 + extraWoodWinQty;
-    chosenFeaturesList.unshift(`<span style="color:red; font-weight:bold;">❗</span> Окно 75х75 см деревянное с двойным остеклением — ${totalWoodWins} шт.`);
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Окно 75х75 см деревянное с двойным остеклением — ${totalWoodWins} шт.`);
   }
+
+  // Остальные допы (кроме сборки и окон 75х75)
+  ALL_EXTRAS.forEach(srv => {
+    if (srv.id === 'height_increase' && isBk) return;
+    if (srv.id === 'assembly_site') return;
+    if (srv.id === 'win_wood_extra') return;
+    if (state.extrasChecked[srv.id]) {
+      const q = state.extrasQty[srv.id] || 1;
+      chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> ${srv.name} — ${q} шт.`);
+      equipmentTotal += getP(srv.id, getExtraPrice(srv.id, srv.price)) * q;
+    }
+  });
 
   // Расчет сборки на участке: 27% от отделки снаружи для деревянных, 50% от суммы для БК
   let assemblyPrice = 0;
@@ -1308,19 +1335,33 @@ function updateKP() {
   if (state.taxMode === '13') finalTotal = tax13Val;
   if (state.taxMode === '22') finalTotal = tax22Val;
 
-  // Оплата
+  // Оплата (Скрываем наличные при выборе оплаты по счету / НДС)
   const depositVal = 5000;
   const balanceToDriver = Math.max(0, finalTotal - depositVal);
   const trSummary = document.createElement('tr');
-  trSummary.innerHTML = `
-    <td colspan="3" class="tech-payment-info">
-      <div><strong>Стоимость бытовки:</strong> ${equipmentTotal.toLocaleString('ru-RU')} руб.</div>
-      <div><strong>Итого:</strong> ${finalTotal.toLocaleString('ru-RU')} руб.</div>
+
+  let paymentDetailsHtml = '';
+  if (state.taxMode === '13' || state.taxMode === '22') {
+    const taxLabel = state.taxMode === '13' ? 'Без НДС (+13%)' : 'С НДС (+22%)';
+    paymentDetailsHtml = `
+      <div style="margin-top:6px; font-weight:700; color:#1e3a8a;">Оплата по безналичному расчету (${taxLabel})</div>
+      <div>Оплата производится по выставленному счету.</div>
+    `;
+  } else {
+    paymentDetailsHtml = `
       <div style="margin-top:6px;"><strong>Предоплата:</strong> ${depositVal.toLocaleString('ru-RU')} руб.</div>
       <div>тел. +7 (985) 128-33-85</div>
       <div>Ольга К. Т-Банк</div>
       <div style="color:#dc2626; font-weight:700; margin: 4px 0;">Сообщение о назначении платежа указывать не нужно!</div>
       <div style="font-weight:700;">${balanceToDriver.toLocaleString('ru-RU')} руб. оплата водителю НАЛИЧНЫМИ</div>
+    `;
+  }
+
+  trSummary.innerHTML = `
+    <td colspan="3" class="tech-payment-info">
+      <div><strong>Стоимость бытовки:</strong> ${equipmentTotal.toLocaleString('ru-RU')} руб.</div>
+      <div><strong>Итого:</strong> ${finalTotal.toLocaleString('ru-RU')} руб.</div>
+      ${paymentDetailsHtml}
     </td>
   `;
   tbody.appendChild(trSummary);
@@ -1444,7 +1485,7 @@ function rebuildModalText() {
 
   // УТЕПЛЕНИЕ
   if (state.insulation === 'ins100') {
-    const calcIns100Price = Math.round(prod.outerPrices[state.outerChoice] * 0.2);
+    const calcIns100Price = getDefaultIns100Price(prod);
     equipmentTotal += getP('ins100', calcIns100Price);
   } else if (state.insulation === 'rock50') {
     equipmentTotal += getP('rock50', prod.insulationPrices.rock50);
@@ -1509,6 +1550,35 @@ function rebuildModalText() {
   let insulText = (state.insulation === 'rock50') ? 'Каменная вата (плитами) 50 мм' : ((state.insulation === 'ins100') ? '100 мм' : '50 мм');
   if (state.innerChoice === 'in_none') insulText = 'Без утепления';
 
+  const isRasp = document.getElementById('is_raspashonka') && document.getElementById('is_raspashonka').checked;
+
+  // Формируем единый массив особенностей (допов) для заявок
+  let extrasList = [];
+  if (isRasp) {
+    extrasList.push(`❗ Планировка: РАСПАШОНКА`);
+  }
+  if (!isBk && state.frameType === 'frame_100') {
+    extrasList.push(`❗ Каркас: 100х50 из бруса (усиленный)`);
+  }
+  if (state.innerChoice !== 'in_org') {
+    extrasList.push(`❗ Внутренняя отделка: ${innerTpl.name}`);
+  }
+  if (state.insulation === 'ins100' && state.innerChoice !== 'in_none') {
+    extrasList.push(`❗ Утепление: 100 мм минеральной ватой (пол, стены, потолок)`);
+  } else if (state.insulation === 'rock50' && state.innerChoice !== 'in_none') {
+    extrasList.push(`❗ Утепление: Каменная вата (плитами) 50 мм (пол, стены, потолок)`);
+  }
+  if (hasExtraWoodWin) {
+    extrasList.push(`❗ Окно 75х75 см деревянное с двойным остеклением — ${1 + extraWoodWinQty} шт.`);
+  }
+  ALL_EXTRAS.forEach(s => {
+    if (s.id === 'height_increase' && isBk) return;
+    if (s.id === 'win_wood_extra') return;
+    if (state.extrasChecked[s.id]) {
+      extrasList.push(`❗ ${s.name} — ${state.extrasQty[s.id] || 1} шт.`);
+    }
+  });
+
   if (type === 'prod') {
     text += `Заявка на ${dateVal}\n`;
     text += `Тег:\nЛид от:\n`;
@@ -1520,7 +1590,7 @@ function rebuildModalText() {
       text += `Доставка: самовывоз\n\n`;
     }
     
-    text += `Новая ${prod.name}\n`;
+    text += `Новая ${prod.name} ${isRasp ? '(РАСПАШОНКА)' : ''}\n`;
     text += `Внутренний размер: ${prod.innerDim}\n\n`;
 
     if (!isBk) {
@@ -1547,17 +1617,6 @@ function rebuildModalText() {
       text += `• Пароизоляция: Пароизоляция (пол, стены, потолок)\n\n`;
     }
 
-    let extrasList = [];
-    if (hasExtraWoodWin) {
-      extrasList.push(`❗ Окно 75х75 см деревянное с двойным остеклением — ${1 + extraWoodWinQty} шт.`);
-    }
-    ALL_EXTRAS.forEach(s => {
-      if (s.id === 'height_increase' && isBk) return;
-      if (s.id === 'win_wood_extra') return;
-      if (state.extrasChecked[s.id]) {
-        extrasList.push(`❗ ${s.name} — ${state.extrasQty[s.id] || 1} шт.`);
-      }
-    });
     if (extrasList.length > 0) {
       text += `Особенности комплектации (допы):\n` + extrasList.join('\n') + `\n\n`;
     }
@@ -1572,8 +1631,14 @@ function rebuildModalText() {
     text += `Стоимость бытовки: ${equipmentTotal.toLocaleString('ru-RU')} руб.\n`;
     text += `Стоимость доставки: ${deliveryCost.toLocaleString('ru-RU')} руб.\n`;
     text += `Итого: ${total.toLocaleString('ru-RU')} руб.\n\n`;
-    text += `Предоплата ${deposit.toLocaleString('ru-RU')} руб.\n`;
-    text += `${balance.toLocaleString('ru-RU')} руб. оплата водителю НАЛИЧНЫМИ\n\n`;
+    
+    if (state.taxMode === '13' || state.taxMode === '22') {
+      const taxLabel = state.taxMode === '13' ? 'Без НДС (+13%)' : 'С НДС (+22%)';
+      text += `Оплата: Безналичный расчет по счету (${taxLabel})\n\n`;
+    } else {
+      text += `Предоплата ${deposit.toLocaleString('ru-RU')} руб.\n`;
+      text += `${balance.toLocaleString('ru-RU')} руб. оплата водителю НАЛИЧНЫМИ\n\n`;
+    }
     
     text += `Заказчик: ${cName ? cName : '—'}\n`;
     text += `Телефон: ${cPhone ? cPhone : '—'}\n`;
@@ -1586,7 +1651,7 @@ function rebuildModalText() {
   } else {
     /* ЗАЯВКА ДЛЯ КЛИЕНТА */
     text += `Заявка на ${dateVal}\n\n`;
-    text += `Новая ${prod.name}\n`;
+    text += `Новая ${prod.name} ${isRasp ? '(РАСПАШОНКА)' : ''}\n`;
     text += `Внутренний размер: ${prod.innerDim}\n\n`;
 
     if (!isBk) {
@@ -1613,17 +1678,6 @@ function rebuildModalText() {
       text += `• Пароизоляция: Пароизоляция (пол, стены, потолок)\n\n`;
     }
 
-    let extrasList = [];
-    if (hasExtraWoodWin) {
-      extrasList.push(`❗ Окно 75х75 см деревянное с двойным остеклением — ${1 + extraWoodWinQty} шт.`);
-    }
-    ALL_EXTRAS.forEach(s => {
-      if (s.id === 'height_increase' && isBk) return;
-      if (s.id === 'win_wood_extra') return;
-      if (state.extrasChecked[s.id]) {
-        extrasList.push(`❗ ${s.name} — ${state.extrasQty[s.id] || 1} шт.`);
-      }
-    });
     if (extrasList.length > 0) {
       text += `Особенности комплектации (допы):\n` + extrasList.join('\n') + `\n\n`;
     }
@@ -1636,10 +1690,18 @@ function rebuildModalText() {
 
     text += `---\n`;
     text += `Итого: ${total.toLocaleString('ru-RU')} руб.\n\n`;
-    text += `Предоплата ${deposit.toLocaleString('ru-RU')} руб.\n`;
-    text += `тел. +7 (985) 128-33-85\n`;
-    text += `Ольга К. Т-Банк\n\n`;
-    text += `Сообщение о назначении платежа указывать не нужно!\n`;
+    
+    if (state.taxMode === '13' || state.taxMode === '22') {
+      const taxLabel = state.taxMode === '13' ? 'Без НДС (+13%)' : 'С НДС (+22%)';
+      text += `Оплата по безналичному расчету (${taxLabel}).\n`;
+      text += `Оплата производится по выставленному счету.\n`;
+    } else {
+      text += `Предоплата ${deposit.toLocaleString('ru-RU')} руб.\n`;
+      text += `тел. +7 (985) 128-33-85\n`;
+      text += `Ольга К. Т-Банк\n\n`;
+      text += `Сообщение о назначении платежа указывать не нужно!\n`;
+      text += `${balance.toLocaleString('ru-RU')} руб. оплата водителю НАЛИЧНЫМИ\n`;
+    }
   }
 
   document.getElementById('modal_text').value = text;
