@@ -53,7 +53,7 @@
     .plan-card { border: 2px solid var(--border-color); border-radius: 6px; padding: 6px 4px; text-align: center; cursor: pointer; background: #fff; transition: all 0.15s; }
     .plan-card:hover { border-color: #94a3b8; }
     .plan-card.active { border-color: #16a34a; background: #f0fdf4; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.3); }
-    .plan-card svg { width: 100%; height: 50px; display: block; margin: 0 auto 3px; }
+    .plan-card svg { width: 100%; height: 55px; display: block; margin: 0 auto 3px; }
     .plan-card span { font-size: 11px; font-weight: 600; color: #475569; }
 
     /* Категории допов */
@@ -67,14 +67,14 @@
     .option-left input[type="radio"], .option-left input[type="checkbox"] { width: 17px; height: 17px; cursor: pointer; accent-color: var(--primary); }
     .option-left label { font-size: 12.5px; font-weight: 600; cursor: pointer; user-select: none; }
     .option-right { display: flex; align-items: center; gap: 6px; }
-    .qty-input { width: 44px; text-align: center; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-weight: 700; font-size: 12px; }
+    .qty-input { width: 48px; text-align: center; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-weight: 700; font-size: 12px; }
     .price-custom-input { width: 80px; text-align: right; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-weight: 700; color: #0f172a; font-size: 12px; }
     .reset-sub-btn { font-size: 11px; padding: 4px 6px; background: #e2e8f0; border: none; border-radius: 3px; cursor: pointer; color: #475569; }
     .reset-sub-btn:hover { background: #cbd5e1; }
 
     /* Цветная плашка подвыбора */
     .color-select-box { background: #fef9c3; border: 1px solid #fde047; padding: 8px 10px; border-radius: 4px; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: #713f12; }
-    .color-select-box select { width: 100%; margin-top: 4px; padding: 6px; border: 1px solid #ca8a04; border-radius: 4px; font-size: 13px; font-weight: 600; background: #fff; }
+    .color-select-box select, .color-select-box input[type="text"] { width: 100%; margin-top: 4px; padding: 6px; border: 1px solid #ca8a04; border-radius: 4px; font-size: 13px; font-weight: 600; background: #fff; color: #0f172a; outline: none; }
 
     /* Блок Доставки */
     .delivery-box { background: #1e293b; color: #fff; padding: 12px 14px; border-radius: 4px; font-weight: 700; margin-top: 8px; }
@@ -206,7 +206,7 @@
     <!-- 3. Варианты отделки снаружи -->
     <div class="section-wrap" id="sec_outer">
       <div class="section-header" onclick="toggleSection('sec_outer')">
-        <span>3. Варианты отделки снаружи</span>
+        <span>3. Варианты отделки снаружи (кол-во модулей)</span>
         <span class="arrow">▼</span>
       </div>
       <div class="section-body">
@@ -332,10 +332,10 @@
     </div>
 
     <div class="kp-info-box">
-      <div><strong>Заказчик:</strong> <span id="kp_out_client">—</span></div>
-      <div><strong>Телефон:</strong> <span id="kp_out_phone">—</span></div>
-      <div><strong>Заказ:</strong> <span id="kp_out_order">—</span></div>
-      <div><strong>Адрес объекта:</strong> <span id="kp_out_addr">—</span></div>
+      <div><strong>Заказчик:</strong> <span id="kp_out_client"></span></div>
+      <div><strong>Телефон:</strong> <span id="kp_out_phone"></span></div>
+      <div><strong>Заказ:</strong> <span id="kp_out_order"></span></div>
+      <div><strong>Адрес объекта:</strong> <span id="kp_out_addr"></span></div>
       <div><strong>Размер конструкции:</strong> <span id="kp_out_size">3 х 2.3 м</span> <strong style="margin-left:8px; color:#1e3a8a;">(размер внутри: <span id="kp_out_inner_dim">2,7 х 2,1 м</span>)</strong></div>
       <div style="display:flex; justify-content:space-between; margin-top:4px;">
         <span><strong>Номер КП:</strong> <span id="kp_out_num">КП-2160</span></span>
@@ -515,25 +515,25 @@ const PRODUCTS_DATA = {
 const PROF_COLORS = ['Оцинкованный', 'Графит', 'Светло-серый', 'Коричневый', 'Зеленый', 'Бежевый', 'Синий', 'Свой вариант'];
 const THREE_COLORS = ['Желтый', 'Коричневый', 'Бесцветный'];
 
-/* ВСЕ 17 ПЛАНИРОВОК */
+/* 17 ПЛАНИРОВОК (ОБНОВЛЕННЫЕ ПО НОВОЙ СХЕМЕ) */
 const PLANS = [
-  { id: 'plan_0', name: 'Без планировки', num: 'HET', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#94a3b8" stroke-width="2"/><text x="100" y="45" text-anchor="middle" font-size="10" fill="#94a3b8">HET</text><text x="100" y="62" text-anchor="middle" font-size="11" font-weight="600" fill="#64748b">Без планировки</text>' },
-  { id: 'plan_1', name: 'Планировка №1', num: '1', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="140" y1="15" x2="140" y2="85" stroke="#334155" stroke-width="2"/><path d="M140 60 Q155 60 155 75" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="140" y1="60" x2="140" y2="75" stroke="#fff" stroke-width="2"/><line x1="35" y1="85" x2="65" y2="85" stroke="#16a34a" stroke-width="4"/><line x1="145" y1="85" x2="165" y2="85" stroke="#fff" stroke-width="3"/><path d="M145 85 Q145 100 160 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><text x="170" y="45" font-size="16" font-weight="700" fill="#0f172a">1</text>' },
-  { id: 'plan_2', name: 'Планировка №2', num: '2', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="60" y1="15" x2="60" y2="85" stroke="#334155" stroke-width="2"/><line x1="20" y1="85" x2="45" y2="85" stroke="#fff" stroke-width="3"/><path d="M20 85 Q20 100 35 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="100" y1="15" x2="140" y2="15" stroke="#16a34a" stroke-width="4"/><text x="150" y="45" font-size="16" font-weight="700" fill="#0f172a">2</text>' },
-  { id: 'plan_3', name: 'Планировка №3', num: '3', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="15" y1="50" x2="15" y2="70" stroke="#fff" stroke-width="3"/><path d="M15 50 Q0 50 0 65" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="100" y1="15" x2="135" y2="15" stroke="#16a34a" stroke-width="4"/><text x="150" y="45" font-size="16" font-weight="700" fill="#0f172a">3</text>' },
-  { id: 'plan_4', name: 'Планировка №4', num: '4', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="15" y1="50" x2="15" y2="70" stroke="#fff" stroke-width="3"/><path d="M15 50 Q0 50 0 65" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="60" y1="85" x2="100" y2="85" stroke="#16a34a" stroke-width="4"/><text x="150" y="45" font-size="16" font-weight="700" fill="#0f172a">4</text>' },
-  { id: 'plan_5', name: 'Планировка №5', num: '5', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="15" y1="50" x2="15" y2="70" stroke="#fff" stroke-width="3"/><path d="M15 50 Q0 50 0 65" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="85" y1="15" x2="115" y2="15" stroke="#16a34a" stroke-width="4"/><text x="150" y="45" font-size="16" font-weight="700" fill="#0f172a">5</text>' },
-  { id: 'plan_6', name: 'Планировка №6', num: '6', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="25" y1="15" x2="25" y2="85" stroke="#334155" stroke-width="2"/><line x1="15" y1="50" x2="15" y2="70" stroke="#fff" stroke-width="3"/><path d="M15 50 Q0 50 0 65" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="80" y1="85" x2="110" y2="85" stroke="#16a34a" stroke-width="4"/><text x="150" y="45" font-size="16" font-weight="700" fill="#0f172a">6</text>' },
-  { id: 'plan_7', name: 'Планировка №7', num: '7', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="15" y1="35" x2="15" y2="55" stroke="#fff" stroke-width="3"/><path d="M15 35 Q0 35 0 50" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="60" y1="85" x2="90" y2="85" stroke="#16a34a" stroke-width="4"/><text x="150" y="45" font-size="16" font-weight="700" fill="#0f172a">7</text>' },
-  { id: 'plan_8', name: 'Планировка №8', num: '8', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="75" y1="85" x2="105" y2="85" stroke="#fff" stroke-width="3"/><path d="M75 85 Q75 100 90 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="130" y1="15" x2="160" y2="15" stroke="#16a34a" stroke-width="4"/><text x="140" y="55" font-size="16" font-weight="700" fill="#0f172a">8</text>' },
-  { id: 'plan_9', name: 'Планировка №9', num: '9', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="90" y1="85" x2="115" y2="85" stroke="#fff" stroke-width="3"/><path d="M90 85 Q90 100 105 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="25" y1="15" x2="55" y2="15" stroke="#16a34a" stroke-width="4"/><line x1="135" y1="15" x2="165" y2="15" stroke="#16a34a" stroke-width="4"/><text x="150" y="55" font-size="16" font-weight="700" fill="#0f172a">9</text>' },
-  { id: 'plan_10', name: 'Планировка №10', num: '10', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="100" y1="85" x2="125" y2="85" stroke="#fff" stroke-width="3"/><path d="M100 85 Q100 100 115 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="25" y1="15" x2="65" y2="15" stroke="#16a34a" stroke-width="4"/><text x="145" y="55" font-size="16" font-weight="700" fill="#0f172a">10</text>' },
-  { id: 'plan_11', name: 'Планировка №11', num: '11', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="15" y1="45" x2="15" y2="65" stroke="#fff" stroke-width="3"/><path d="M15 45 Q0 45 0 60" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="185" y1="35" x2="185" y2="65" stroke="#16a34a" stroke-width="4"/><text x="150" y="55" font-size="16" font-weight="700" fill="#0f172a">11</text>' },
-  { id: 'plan_12', name: 'Планировка №12', num: '12', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="60" y1="85" x2="85" y2="85" stroke="#fff" stroke-width="3"/><path d="M60 85 Q60 100 75 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="130" y1="15" x2="160" y2="15" stroke="#16a34a" stroke-width="4"/><text x="145" y="55" font-size="16" font-weight="700" fill="#0f172a">12</text>' },
-  { id: 'plan_13', name: 'Планировка №13', num: '13', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="65" y1="15" x2="65" y2="85" stroke="#334155" stroke-width="2"/><line x1="120" y1="15" x2="120" y2="85" stroke="#334155" stroke-width="2"/><line x1="65" y1="65" x2="65" y2="80" stroke="#fff" stroke-width="2"/><path d="M65 65 Q50 65 50 80" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="120" y1="65" x2="120" y2="80" stroke="#fff" stroke-width="2"/><path d="M120 65 Q135 65 135 80" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="90" y1="85" x2="105" y2="85" stroke="#fff" stroke-width="3"/><path d="M90 85 Q90 100 100 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><text x="145" y="45" font-size="16" font-weight="700" fill="#0f172a">13</text>' },
-  { id: 'plan_14', name: 'Планировка №14', num: '14', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="75" y1="15" x2="75" y2="85" stroke="#334155" stroke-width="2"/><line x1="75" y1="60" x2="75" y2="78" stroke="#fff" stroke-width="2"/><path d="M75 60 Q60 60 60 75" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="90" y1="85" x2="110" y2="85" stroke="#fff" stroke-width="3"/><path d="M90 85 Q90 100 105 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="30" y1="85" x2="55" y2="85" stroke="#16a34a" stroke-width="3"/><line x1="125" y1="85" x2="155" y2="85" stroke="#16a34a" stroke-width="3"/><text x="150" y="45" font-size="16" font-weight="700" fill="#0f172a">14</text>' },
-  { id: 'plan_15', name: 'Планировка №15', num: '15', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="125" y1="15" x2="125" y2="85" stroke="#334155" stroke-width="2"/><line x1="125" y1="60" x2="125" y2="78" stroke="#fff" stroke-width="2"/><path d="M125 60 Q140 60 140 75" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="90" y1="85" x2="110" y2="85" stroke="#fff" stroke-width="3"/><path d="M90 85 Q90 100 105 100" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="45" y1="85" x2="75" y2="85" stroke="#16a34a" stroke-width="3"/><line x1="145" y1="85" x2="170" y2="85" stroke="#16a34a" stroke-width="3"/><text x="145" y="45" font-size="16" font-weight="700" fill="#0f172a">15</text>' },
-  { id: 'plan_16', name: 'Планировка №16', num: '16', svg: '<rect x="15" y="15" width="170" height="70" fill="#fff" stroke="#334155" stroke-width="2"/><line x1="45" y1="15" x2="45" y2="85" stroke="#334155" stroke-width="2"/><line x1="45" y1="60" x2="45" y2="78" stroke="#fff" stroke-width="2"/><path d="M45 60 Q60 60 60 75" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="15" y1="60" x2="15" y2="80" stroke="#fff" stroke-width="3"/><path d="M15 60 Q0 60 0 75" fill="none" stroke="#2563eb" stroke-width="1.5"/><line x1="110" y1="85" x2="145" y2="85" stroke="#16a34a" stroke-width="3"/><text x="145" y="45" font-size="16" font-weight="700" fill="#0f172a">16</text>' }
+  { id: 'plan_0', name: 'Без планировки', num: 'НЕТ', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#94a3b8" stroke-width="2.5"/><text x="100" y="42" text-anchor="middle" font-size="10" fill="#94a3b8">НЕТ</text><text x="100" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="#64748b">Без планировки</text>' },
+  { id: 'plan_1', name: 'Планировка №1', num: '1', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="55" y1="75" x2="77" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="150" y1="75" x2="168" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="168" y1="75" x2="168" y2="93" stroke="#000" stroke-width="1.2"/><path d="M150 75 A18 18 0 0 0 168 93" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">1</text>' },
+  { id: 'plan_2', name: 'Планировка №2', num: '2', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="122" y1="75" x2="144" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="32" y1="75" x2="50" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="32" y1="75" x2="32" y2="93" stroke="#000" stroke-width="1.2"/><path d="M50 75 A18 18 0 0 1 32 93" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">2</text>' },
+  { id: 'plan_3', name: 'Планировка №3', num: '3', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="89" y1="75" x2="111" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="25" y1="52" x2="25" y2="70" stroke="#fff" stroke-width="3.5"/><line x1="25" y1="70" x2="7" y2="70" stroke="#000" stroke-width="1.2"/><path d="M25 52 A18 18 0 0 0 7 70" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">3</text>' },
+  { id: 'plan_4', name: 'Планировка №4', num: '4', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="89" y1="75" x2="111" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="25" y1="35" x2="25" y2="53" stroke="#fff" stroke-width="3.5"/><line x1="25" y1="53" x2="7" y2="53" stroke="#000" stroke-width="1.2"/><path d="M25 35 A18 18 0 0 0 7 53" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">4</text>' },
+  { id: 'plan_5', name: 'Планировка №5', num: '5', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="89" y1="15" x2="111" y2="15" stroke="#dc2626" stroke-width="4"/><line x1="25" y1="52" x2="25" y2="70" stroke="#fff" stroke-width="3.5"/><line x1="25" y1="70" x2="7" y2="70" stroke="#000" stroke-width="1.2"/><path d="M25 52 A18 18 0 0 0 7 70" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">5</text>' },
+  { id: 'plan_6', name: 'Планировка №6', num: '6', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="175" y1="34" x2="175" y2="56" stroke="#dc2626" stroke-width="4"/><line x1="25" y1="35" x2="25" y2="53" stroke="#fff" stroke-width="3.5"/><line x1="25" y1="53" x2="7" y2="53" stroke="#000" stroke-width="1.2"/><path d="M25 35 A18 18 0 0 0 7 53" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">6</text>' },
+  { id: 'plan_7', name: 'Планировка №7', num: '7', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="25" y1="22" x2="25" y2="44" stroke="#dc2626" stroke-width="4"/><line x1="25" y1="52" x2="25" y2="70" stroke="#fff" stroke-width="3.5"/><line x1="25" y1="70" x2="7" y2="70" stroke="#000" stroke-width="1.2"/><path d="M25 52 A18 18 0 0 0 7 70" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">7</text>' },
+  { id: 'plan_8', name: 'Планировка №8', num: '8', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="132" y1="75" x2="154" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="95" y1="75" x2="113" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="113" y1="75" x2="113" y2="93" stroke="#000" stroke-width="1.2"/><path d="M95 75 A18 18 0 0 0 113 93" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">8</text>' },
+  { id: 'plan_9', name: 'Планировка №9', num: '9', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="48" y1="75" x2="70" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="95" y1="75" x2="113" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="113" y1="75" x2="113" y2="93" stroke="#000" stroke-width="1.2"/><path d="M95 75 A18 18 0 0 0 113 93" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="22" font-weight="600" fill="#000">9</text>' },
+  { id: 'plan_10', name: 'Планировка №10', num: '10', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="25" y1="34" x2="25" y2="56" stroke="#dc2626" stroke-width="4"/><line x1="133" y1="75" x2="151" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="151" y1="75" x2="151" y2="93" stroke="#000" stroke-width="1.2"/><path d="M133 75 A18 18 0 0 0 151 93" fill="none" stroke="#000" stroke-width="1.2"/><text x="155" y="65" text-anchor="middle" font-size="21" font-weight="600" fill="#000">10</text>' },
+  { id: 'plan_11', name: 'Планировка №11', num: '11', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="175" y1="34" x2="175" y2="56" stroke="#dc2626" stroke-width="4"/><line x1="25" y1="22" x2="25" y2="68" stroke="#fff" stroke-width="3.5"/><line x1="25" y1="22" x2="7" y2="22" stroke="#000" stroke-width="1.2"/><path d="M7 22 A18 18 0 0 0 25 40" fill="none" stroke="#000" stroke-width="1.2"/><line x1="25" y1="68" x2="7" y2="68" stroke="#000" stroke-width="1.2"/><path d="M7 68 A18 18 0 0 1 25 50" fill="none" stroke="#000" stroke-width="1.2"/><text x="155" y="65" text-anchor="middle" font-size="21" font-weight="600" fill="#000">11</text>' },
+  { id: 'plan_12', name: 'Планировка №12', num: '12', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="48" y1="75" x2="70" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="130" y1="75" x2="152" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="95" y1="75" x2="113" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="113" y1="75" x2="113" y2="93" stroke="#000" stroke-width="1.2"/><path d="M95 75 A18 18 0 0 0 113 93" fill="none" stroke="#000" stroke-width="1.2"/><text x="155" y="65" text-anchor="middle" font-size="21" font-weight="600" fill="#000">12</text>' },
+  { id: 'plan_13', name: 'Планировка №13', num: '13', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="80" y1="15" x2="80" y2="75" stroke="#000" stroke-width="2.5"/><line x1="118" y1="15" x2="118" y2="75" stroke="#000" stroke-width="2.5"/><line x1="48" y1="75" x2="70" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="125" y1="75" x2="147" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="91" y1="75" x2="109" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="109" y1="75" x2="109" y2="93" stroke="#000" stroke-width="1.2"/><path d="M91 75 A18 18 0 0 0 109 93" fill="none" stroke="#000" stroke-width="1.2"/><line x1="80" y1="48" x2="80" y2="66" stroke="#fff" stroke-width="3"/><line x1="80" y1="66" x2="62" y2="66" stroke="#000" stroke-width="1.2"/><path d="M80 48 A18 18 0 0 0 62 66" fill="none" stroke="#000" stroke-width="1.2"/><line x1="118" y1="48" x2="118" y2="66" stroke="#fff" stroke-width="3"/><line x1="118" y1="66" x2="136" y2="66" stroke="#000" stroke-width="1.2"/><path d="M118 48 A18 18 0 0 1 136 66" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="21" font-weight="600" fill="#000">13</text>' },
+  { id: 'plan_14', name: 'Планировка №14', num: '14', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="80" y1="15" x2="80" y2="75" stroke="#000" stroke-width="2.5"/><line x1="48" y1="75" x2="70" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="128" y1="75" x2="150" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="94" y1="75" x2="112" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="112" y1="75" x2="112" y2="93" stroke="#000" stroke-width="1.2"/><path d="M94 75 A18 18 0 0 0 112 93" fill="none" stroke="#000" stroke-width="1.2"/><line x1="80" y1="48" x2="80" y2="66" stroke="#fff" stroke-width="3"/><line x1="80" y1="66" x2="62" y2="66" stroke="#000" stroke-width="1.2"/><path d="M80 48 A18 18 0 0 0 62 66" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="21" font-weight="600" fill="#000">14</text>' },
+  { id: 'plan_15', name: 'Планировка №15', num: '15', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="118" y1="15" x2="118" y2="75" stroke="#000" stroke-width="2.5"/><line x1="48" y1="75" x2="70" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="125" y1="75" x2="147" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="94" y1="75" x2="112" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="112" y1="75" x2="112" y2="93" stroke="#000" stroke-width="1.2"/><path d="M94 75 A18 18 0 0 0 112 93" fill="none" stroke="#000" stroke-width="1.2"/><line x1="118" y1="48" x2="118" y2="66" stroke="#fff" stroke-width="3"/><line x1="118" y1="66" x2="136" y2="66" stroke="#000" stroke-width="1.2"/><path d="M118 48 A18 18 0 0 1 136 66" fill="none" stroke="#000" stroke-width="1.2"/><text x="158" y="65" text-anchor="middle" font-size="21" font-weight="600" fill="#000">15</text>' },
+  { id: 'plan_16', name: 'Планировка №16', num: '16', svg: '<rect x="25" y="15" width="150" height="60" fill="#fff" stroke="#000" stroke-width="3"/><line x1="58" y1="15" x2="58" y2="75" stroke="#000" stroke-width="2.5"/><line x1="122" y1="75" x2="144" y2="75" stroke="#dc2626" stroke-width="4"/><line x1="32" y1="75" x2="50" y2="75" stroke="#fff" stroke-width="3.5"/><line x1="32" y1="75" x2="32" y2="93" stroke="#000" stroke-width="1.2"/><path d="M50 75 A18 18 0 0 1 32 93" fill="none" stroke="#000" stroke-width="1.2"/><line x1="58" y1="48" x2="58" y2="66" stroke="#fff" stroke-width="3"/><line x1="58" y1="66" x2="76" y2="66" stroke="#000" stroke-width="1.2"/><path d="M58 48 A18 18 0 0 1 76 66" fill="none" stroke="#000" stroke-width="1.2"/><text x="155" y="65" text-anchor="middle" font-size="21" font-weight="600" fill="#000">16</text>' }
 ];
 
 /* ВСЕ ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ ИЗ ФАЙЛА, РАЗБИТЫЕ ПО КАТЕГОРИЯМ */
@@ -653,6 +653,10 @@ let state = {
   innerChoice: 'in_org',
   outerChoice: 'prof',
   insulation: 'ins50',
+  baseQty: 1,
+  innerQty: 1,
+  insQty: 1,
+  frameQty: 1,
   profColor: 'Оцинкованный',
   cornersColor: 'Коричневый',
   antisepticColor: 'Коричневый',
@@ -744,6 +748,10 @@ function onSizeChanged() {
       delete state.extrasChecked[k];
       delete state.extrasQty[k];
     });
+  } else {
+    if (!THREE_COLORS.includes(state.cornersColor)) {
+      state.cornersColor = 'Коричневый';
+    }
   }
   renderDynamicOptions();
   updateKP();
@@ -782,6 +790,28 @@ function toggleMorePlans() {
   renderPlans();
 }
 
+/* УПРАВЛЕНИЕ КОЛИЧЕСТВОМ МОДУЛЕЙ И СЕКЦИЙ */
+function changeBaseQty(val) {
+  const q = Math.max(1, parseInt(val) || 1);
+  state.baseQty = q;
+  state.innerQty = q;
+  state.insQty = q;
+  state.frameQty = q;
+  renderDynamicOptions();
+  updateKP();
+}
+
+function changeSectionQty(prop, val) {
+  state[prop] = Math.max(1, parseInt(val) || 1);
+  updateKP();
+}
+
+function onProfColorChange(val) {
+  state.profColor = val;
+  renderDynamicOptions();
+  updateKP();
+}
+
 /* ОПЦИИ ДИНАМИЧЕСКИЕ */
 function renderDynamicOptions() {
   const prod = PRODUCTS_DATA[state.selectedSize];
@@ -804,34 +834,54 @@ function renderDynamicOptions() {
           <label for="out_${optKey}">${optData.name}</label>
         </div>
         <div class="option-right">
-          <input type="text" class="qty-input" value="1" readonly>
+          <input type="number" min="1" max="50" class="qty-input" value="${state.baseQty}" oninput="changeBaseQty(this.value)">
           <input type="number" class="price-custom-input hideable-price" value="${priceVal}" oninput="setCustomPrice('out_${optKey}', this.value)">
           <button class="reset-sub-btn" onclick="resetCustomPrice('out_${optKey}', ${defaultPrice})">сброс</button>
         </div>
       </div>
     `;
 
-    // Цвет профлиста
+    // Цвет профлиста (на дереве 0 р., на БК цветной профлист = 7000 р.)
     if (isChecked && optData.isProf) {
       let opts = PROF_COLORS.map(c => `<option value="${c}" ${state.profColor === c ? 'selected' : ''}>${c}</option>`).join('');
+      const isColoredBk = isBk && state.profColor !== 'Оцинкованный';
+      const profColorPrice = getP('bk_prof_color', 7000);
+
       outerBox.innerHTML += `
         <div class="color-select-box">
-          <span>Цвет профлиста:</span>
-          <select onchange="state.profColor=this.value; updateKP();">${opts}</select>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Цвет профлиста ${isColoredBk ? '(+7 000 р./модуль)' : ''}:</span>
+            ${isColoredBk ? `
+              <div style="display:flex; align-items:center; gap:4px;">
+                <input type="number" class="price-custom-input hideable-price" value="${profColorPrice}" oninput="setCustomPrice('bk_prof_color', this.value)" style="width:75px; padding:2px 5px;">
+                <button class="reset-sub-btn" onclick="resetCustomPrice('bk_prof_color', 7000)">сброс</button>
+              </div>
+            ` : ''}
+          </div>
+          <select onchange="onProfColorChange(this.value)">${opts}</select>
         </div>
       `;
     }
 
-    // Цвет уголков/косынок
+    // Цвет уголков (на БК — вписываемое поле) / косынок (на дереве — список)
     if (isChecked && optData.isProf) {
-      let optsK = THREE_COLORS.map(c => `<option value="${c}" ${state.cornersColor === c ? 'selected' : ''}>${c}</option>`).join('');
-      let kText = isBk ? 'Цвет уголков:' : 'Цвет косынок:';
-      outerBox.innerHTML += `
-        <div class="color-select-box">
-          <span>${kText}</span>
-          <select onchange="state.cornersColor=this.value; updateKP();">${optsK}</select>
-        </div>
-      `;
+      if (isBk) {
+        const safeVal = (state.cornersColor || '').replace(/"/g, '&quot;');
+        outerBox.innerHTML += `
+          <div class="color-select-box">
+            <span>Цвет уголков (впишите любой цвет):</span>
+            <input type="text" value="${safeVal}" placeholder="Например: Коричневый / РАЛ 8017" oninput="state.cornersColor=this.value; updateKP();">
+          </div>
+        `;
+      } else {
+        let optsK = THREE_COLORS.map(c => `<option value="${c}" ${state.cornersColor === c ? 'selected' : ''}>${c}</option>`).join('');
+        outerBox.innerHTML += `
+          <div class="color-select-box">
+            <span>Цвет косынок:</span>
+            <select onchange="state.cornersColor=this.value; updateKP();">${optsK}</select>
+          </div>
+        `;
+      }
     }
 
     // Цвет антисептика
@@ -866,7 +916,7 @@ function renderDynamicOptions() {
           <label for="${tpl.id}">${tpl.name}</label>
         </div>
         <div class="option-right">
-          <input type="text" class="qty-input" value="1" readonly>
+          <input type="number" min="1" max="50" class="qty-input" value="${state.innerQty}" oninput="changeSectionQty('innerQty', this.value)">
           <input type="number" class="price-custom-input hideable-price" value="${priceVal}" oninput="setCustomPrice('${tpl.id}', this.value)">
           <button class="reset-sub-btn" onclick="resetCustomPrice('${tpl.id}', ${defaultPrice})">сброс</button>
         </div>
@@ -885,7 +935,7 @@ function renderDynamicOptions() {
         <label for="ins_50">Утепление 50 мм минеральной ватой (в базе)</label>
       </div>
       <div class="option-right">
-        <input type="text" class="qty-input" value="1" readonly>
+        <input type="number" min="1" max="50" class="qty-input" value="${state.insQty}" oninput="changeSectionQty('insQty', this.value)">
         <span style="font-weight:700; width:80px; text-align:right;">0 р.</span>
       </div>
     </div>
@@ -895,7 +945,7 @@ function renderDynamicOptions() {
         <label for="ins_100">Утепление 100 мм минеральной ватой</label>
       </div>
       <div class="option-right">
-        <input type="text" class="qty-input" value="1" readonly>
+        <input type="number" min="1" max="50" class="qty-input" value="${state.insQty}" oninput="changeSectionQty('insQty', this.value)">
         <input type="number" class="price-custom-input hideable-price" value="${getP('ins100', calcIns100Price)}" oninput="setCustomPrice('ins100', this.value)">
         <button class="reset-sub-btn" onclick="resetCustomPrice('ins100', ${calcIns100Price})">сброс</button>
       </div>
@@ -906,7 +956,7 @@ function renderDynamicOptions() {
         <label for="ins_rock">Каменная вата (плитами) 50мм пол, стены, потолок <span style="color:#16a34a; font-size:11px;">[авто: каркас 100х50]</span></label>
       </div>
       <div class="option-right">
-        <input type="text" class="qty-input" value="1" readonly>
+        <input type="number" min="1" max="50" class="qty-input" value="${state.insQty}" oninput="changeSectionQty('insQty', this.value)">
         <input type="number" class="price-custom-input hideable-price" value="${getP('rock50', prod.insulationPrices.rock50)}" oninput="setCustomPrice('rock50', this.value)">
         <button class="reset-sub-btn" onclick="resetCustomPrice('rock50', ${prod.insulationPrices.rock50})">сброс</button>
       </div>
@@ -922,6 +972,9 @@ function renderDynamicOptions() {
           <input type="radio" checked disabled>
           <label>Металлокаркас: швеллер 100х50х3мм, стойки 63х63х3мм</label>
         </div>
+        <div class="option-right">
+          <input type="number" min="1" max="50" class="qty-input" value="${state.frameQty}" oninput="changeSectionQty('frameQty', this.value)">
+        </div>
       </div>
     `;
   } else {
@@ -933,7 +986,7 @@ function renderDynamicOptions() {
           <label for="fr_50">Каркас 50х50 из бруса (стандарт)</label>
         </div>
         <div class="option-right">
-          <input type="text" class="qty-input" value="1" readonly>
+          <input type="number" min="1" max="50" class="qty-input" value="${state.frameQty}" oninput="changeSectionQty('frameQty', this.value)">
           <span style="font-weight:700; width:80px; text-align:right;">0 р.</span>
         </div>
       </div>
@@ -943,7 +996,7 @@ function renderDynamicOptions() {
           <label for="fr_100">Замена каркаса с 50х50 на 100х50 ${isRockWool ? '<span style="color:#16a34a; font-size:11px;">[Включено для каменной ваты]</span>' : ''}</label>
         </div>
         <div class="option-right">
-          <input type="text" class="qty-input" value="1" readonly>
+          <input type="number" min="1" max="50" class="qty-input" value="${state.frameQty}" oninput="changeSectionQty('frameQty', this.value)">
           <input type="number" class="price-custom-input hideable-price" value="${getP('frame_100', prod.frameUpgradePrice)}" oninput="setCustomPrice('frame_100', this.value)">
           <button class="reset-sub-btn" onclick="resetCustomPrice('frame_100', ${prod.frameUpgradePrice})">сброс</button>
         </div>
@@ -1010,6 +1063,7 @@ function onInsulationChange(mode) {
 
 function setInnerChoice(val) {
   state.innerChoice = val;
+  renderDynamicOptions();
   updateKP();
 }
 
@@ -1120,18 +1174,31 @@ function updateKP() {
   let equipmentTotal = 0;
   const getP = (key, defaultP) => (state.customPrices[key] !== undefined ? state.customPrices[key] : defaultP);
 
+  const bQty = state.baseQty || 1;
+  const inQty = state.innerQty || 1;
+  const insQ = state.insQty || 1;
+  const frQty = state.frameQty || 1;
+
   // 3. Базовая бытовка (тянется от СНАРУЖИ)
   const baseKey = 'out_' + state.outerChoice;
-  const baseCost = getP(baseKey, prod.outerPrices[state.outerChoice]);
+  const baseUnitCost = getP(baseKey, prod.outerPrices[state.outerChoice]);
+  const baseCost = baseUnitCost * bQty;
   equipmentTotal += baseCost;
+
+  // Доплата за цветной профлист на БК (7000 р. за модуль)
+  let bkProfColorCost = 0;
+  if (isBk && state.outerChoice === 'prof' && state.profColor !== 'Оцинкованный') {
+    bkProfColorCost = getP('bk_prof_color', 7000) * bQty;
+    equipmentTotal += bkProfColorCost;
+  }
 
   // 4. Отделка внутри
   const innerTpl = INNER_OPTIONS_TEMPLATES.find(t => t.id === state.innerChoice);
   let innerCost = 0;
   if (innerTpl.priceProp !== 0) {
-    innerCost = getP(innerTpl.id, prod.innerPricesMap[innerTpl.priceProp] || 0);
+    innerCost = getP(innerTpl.id, prod.innerPricesMap[innerTpl.priceProp] || 0) * inQty;
   } else if (innerTpl.id === 'in_none') {
-    innerCost = getP(innerTpl.id, -4000);
+    innerCost = getP(innerTpl.id, -4000) * inQty;
   }
   equipmentTotal += innerCost;
 
@@ -1139,7 +1206,7 @@ function updateKP() {
   let frameDesc = 'Каркас 50х50 из бруса естественной влажности';
   let frameCost = 0;
   if (!isBk && state.frameType === 'frame_100') {
-    frameCost = getP('frame_100', prod.frameUpgradePrice);
+    frameCost = getP('frame_100', prod.frameUpgradePrice) * frQty;
     equipmentTotal += frameCost;
     frameDesc = 'Каркас 100х50 из бруса (усиленный)';
   } else if (isBk) {
@@ -1152,10 +1219,10 @@ function updateKP() {
   
   if (state.insulation === 'ins100') {
     const calcIns100Price = getDefaultIns100Price(prod);
-    insulCost = getP('ins100', calcIns100Price);
+    insulCost = getP('ins100', calcIns100Price) * insQ;
     insulDesc = '100 мм минеральной ватой';
   } else if (state.insulation === 'rock50') {
-    insulCost = getP('rock50', prod.insulationPrices.rock50);
+    insulCost = getP('rock50', prod.insulationPrices.rock50) * insQ;
     insulDesc = 'Каменная вата (плитами) 50 мм';
   }
 
@@ -1168,29 +1235,32 @@ function updateKP() {
   const optData = OUTER_NAMES[state.outerChoice];
   let outerDesc = optData.name;
   if (optData.isProf) {
-    outerDesc += ` (Цвет: ${state.profColor}), ${isBk ? 'цвет уголков' : 'цвет косынок'}: ${state.cornersColor}`;
+    outerDesc += ` (Цвет: ${state.profColor}), ${isBk ? 'цвет уголков' : 'цвет косынок'}: ${state.cornersColor || 'не указан'}`;
   }
   if (optData.isWood) {
     outerDesc += ` [Антисептик: ${state.antisepticColor}]`;
   }
   const innerDesc = innerTpl.name;
 
-  // Сбор списка особенностей комплектации (включая замену отделки, каркаса, утепления и распашонку)
+  // Сбор списка особенностей комплектации
   const chosenFeaturesList = [];
 
   if (document.getElementById('is_raspashonka') && document.getElementById('is_raspashonka').checked) {
     chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Планировка: РАСПАШОНКА`);
   }
+  if (isBk && state.outerChoice === 'prof' && state.profColor !== 'Оцинкованный') {
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Цветной профлист (${state.profColor}) ${bQty > 1 ? `(${bQty} шт.)` : ''}`);
+  }
   if (!isBk && state.frameType === 'frame_100') {
-    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Каркас: 100х50 из бруса (усиленный)`);
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Каркас: 100х50 из бруса (усиленный) ${frQty > 1 ? `(${frQty} шт.)` : ''}`);
   }
   if (state.innerChoice !== 'in_org') {
-    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Внутренняя отделка: ${innerTpl.name}`);
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Внутренняя отделка: ${innerTpl.name} ${inQty > 1 ? `(${inQty} шт.)` : ''}`);
   }
   if (state.insulation === 'ins100' && state.innerChoice !== 'in_none') {
-    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Утепление: 100 мм минеральной ватой (пол, стены, потолок)`);
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Утепление: 100 мм минеральной ватой (пол, стены, потолок) ${insQ > 1 ? `(${insQ} шт.)` : ''}`);
   } else if (state.insulation === 'rock50' && state.innerChoice !== 'in_none') {
-    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Утепление: Каменная вата (плитами) 50 мм (пол, стены, потолок)`);
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Утепление: Каменная вата (плитами) 50 мм (пол, стены, потолок) ${insQ > 1 ? `(${insQ} шт.)` : ''}`);
   }
 
   // Расчет окон 75х75: если выбрано доп. окно — суммируем с базовым в ОДНУ строку в особенности
@@ -1198,8 +1268,8 @@ function updateKP() {
   const extraWoodWinQty = hasExtraWoodWin ? (state.extrasQty['win_wood_extra'] || 1) : 0;
   if (hasExtraWoodWin) {
     equipmentTotal += getP('win_wood_extra', 4000) * extraWoodWinQty;
-    const totalWoodWins = 1 + extraWoodWinQty;
-    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Окно 75х75 см деревянное с двойным остеклением — ${totalWoodWins} шт.`);
+    const totalWoodWins = bQty + extraWoodWinQty;
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Окно 75х75 см деревянное с двойным остеклением (${totalWoodWins} шт.)`);
   }
 
   // Остальные допы (кроме сборки и окон 75х75)
@@ -1209,7 +1279,7 @@ function updateKP() {
     if (srv.id === 'win_wood_extra') return;
     if (state.extrasChecked[srv.id]) {
       const q = state.extrasQty[srv.id] || 1;
-      chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> ${srv.name} — ${q} шт.`);
+      chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> ${srv.name} (${q} шт.)`);
       equipmentTotal += getP(srv.id, getExtraPrice(srv.id, srv.price)) * q;
     }
   });
@@ -1217,13 +1287,14 @@ function updateKP() {
   // Расчет сборки на участке: 27% от отделки снаружи для деревянных, 50% от суммы для БК
   let assemblyPrice = 0;
   if (state.extrasChecked['assembly_site']) {
+    const asmQty = state.extrasQty['assembly_site'] || 1;
     if (isBk) {
-      assemblyPrice = Math.round(equipmentTotal * 0.5);
+      assemblyPrice = Math.round(equipmentTotal * 0.5) * asmQty;
     } else {
-      assemblyPrice = Math.round(baseCost * 0.27);
+      assemblyPrice = Math.round(baseCost * 0.27) * asmQty;
     }
     equipmentTotal += assemblyPrice;
-    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Сборка на участке — 1 шт.`);
+    chosenFeaturesList.push(`<span style="color:red; font-weight:bold;">❗</span> Сборка на участке (${asmQty} шт.)`);
   }
 
   let chosenFeaturesHtml = '';
@@ -1247,8 +1318,10 @@ function updateKP() {
   } else if (hasPVC) {
       windowText = "ПВХ (согласно выбранным допам)";
   } else {
-      windowText = "75х75 см деревянное с двойным остеклением" + (!isBk ? ", открывающееся" : "") + " (1 шт.)";
+      windowText = `75х75 см деревянное с двойным остеклением${!isBk ? ", открывающееся" : ""} (${bQty} шт.)`;
   }
+
+  const totalBlocksGift = prod.blocksGift * bQty;
 
   // Спецификация КП
   let mainItemHtml = '';
@@ -1265,13 +1338,13 @@ function updateKP() {
         <div><strong>Утепление:</strong> ${insulDesc}</div>
         <div><strong>Окно:</strong> ${windowText}</div>
         <div><strong>Пол:</strong> Двойной (доска + ОСБ)</div>
-        <div><strong>Дверь входная:</strong> Каркасная деревянная 1,80х80 см (1 шт.)</div>
+        <div><strong>Дверь входная:</strong> Каркасная деревянная 1,80х80 см (${bQty} шт.)</div>
         <div><strong>Пароизоляция:</strong> Пароизоляция (пол, стены, потолок)</div>
       </div>
       ${chosenFeaturesHtml}
       <div style="margin-top: 8px;">
         <strong>В комплекте:</strong><br>
-        • Фундаментные блоки 20х20х40 см — ${prod.blocksGift} шт.<br>
+        • Фундаментные блоки 20х20х40 см (${totalBlocksGift} шт.)<br>
         • Ступени для входа
         ${state.deliveryRegion === 'ovrazhki' ? '<br>• Электрика: розетка, выключатель, патрон и провод для соединения (без подключения)' : ''}
       </div>
@@ -1289,13 +1362,13 @@ function updateKP() {
         <div><strong>Утепление:</strong> ${insulDesc}</div>
         <div><strong>Окно:</strong> ${windowText}</div>
         <div><strong>Пол:</strong> Двойной (доска + ОСБ)</div>
-        <div><strong>Дверь входная:</strong> Деревянная 1,90х80 см (1 шт.)</div>
+        <div><strong>Дверь входная:</strong> Деревянная 1,90х80 см (${bQty} шт.)</div>
         <div><strong>Пароизоляция:</strong> Пароизоляция (пол, стены, потолок)</div>
       </div>
       ${chosenFeaturesHtml}
       <div style="margin-top: 8px;">
         <strong>В комплекте:</strong><br>
-        • Фундаментные блоки 20х20х40 см — ${prod.blocksGift} шт.<br>
+        • Фундаментные блоки 20х20х40 см (${totalBlocksGift} шт.)<br>
         • Ступени для входа
         ${state.deliveryRegion === 'ovrazhki' ? '<br>• Электрика: розетка, выключатель, патрон и провод для соединения (без подключения)' : ''}
       </div>
@@ -1305,7 +1378,7 @@ function updateKP() {
   const trBase = document.createElement('tr');
   trBase.innerHTML = `
     <td>${mainItemHtml}</td>
-    <td style="text-align:center; font-weight:700;">1</td>
+    <td style="text-align:center; font-weight:700;">${bQty}</td>
     <td class="hideable-price" style="text-align:right; font-weight:700; white-space:nowrap;">${equipmentTotal.toLocaleString('ru-RU')} руб.</td>
   `;
   tbody.appendChild(trBase);
@@ -1335,7 +1408,7 @@ function updateKP() {
   if (state.taxMode === '13') finalTotal = tax13Val;
   if (state.taxMode === '22') finalTotal = tax22Val;
 
-  // Оплата (Скрываем наличные при выборе оплаты по счету / НДС)
+  // Оплата
   const depositVal = 5000;
   const balanceToDriver = Math.max(0, finalTotal - depositVal);
   const trSummary = document.createElement('tr');
@@ -1366,10 +1439,10 @@ function updateKP() {
   `;
   tbody.appendChild(trSummary);
 
-  document.getElementById('kp_out_client').textContent = document.getElementById('client_name').value || '—';
-  document.getElementById('kp_out_phone').textContent = document.getElementById('client_phone').value || '—';
-  document.getElementById('kp_out_order').textContent = document.getElementById('client_order').value || '—';
-  document.getElementById('kp_out_addr').textContent = document.getElementById('client_addr').value || '—';
+  document.getElementById('kp_out_client').textContent = document.getElementById('client_name').value || '';
+  document.getElementById('kp_out_phone').textContent = document.getElementById('client_phone').value || '';
+  document.getElementById('kp_out_order').textContent = document.getElementById('client_order').value || '';
+  document.getElementById('kp_out_addr').textContent = document.getElementById('client_addr').value || '';
   document.getElementById('kp_out_size').textContent = prod.name;
   document.getElementById('kp_out_inner_dim').textContent = prod.innerDim;
 
@@ -1421,6 +1494,10 @@ function resetCalculator(ask) {
     innerChoice: 'in_org',
     outerChoice: 'prof',
     insulation: 'ins50',
+    baseQty: 1,
+    innerQty: 1,
+    insQty: 1,
+    frameQty: 1,
     profColor: 'Оцинкованный',
     cornersColor: 'Коричневый',
     antisepticColor: 'Коричневый',
@@ -1460,35 +1537,46 @@ function rebuildModalText() {
   const isBk = prod.type === 'bk';
   const dateVal = document.getElementById('m_head_date').value || getTodayString();
   const deposit = parseInt(document.getElementById('m_head_deposit').value) || 0;
-  const cName = document.getElementById('m_head_name').value || '';
-  const cPhone = document.getElementById('m_head_phone').value || '';
-  const cAddr = document.getElementById('m_head_addr').value || '';
+  const cName = (document.getElementById('m_head_name').value || '').trim();
+  const cPhone = (document.getElementById('m_head_phone').value || '').trim();
+  const cAddr = (document.getElementById('m_head_addr').value || '').trim();
 
   const getP = (key, defaultP) => (state.customPrices[key] !== undefined ? state.customPrices[key] : defaultP);
   
+  const bQty = state.baseQty || 1;
+  const inQty = state.innerQty || 1;
+  const insQ = state.insQty || 1;
+  const frQty = state.frameQty || 1;
+
   // База от СНАРУЖИ
-  const baseCost = getP('out_' + state.outerChoice, prod.outerPrices[state.outerChoice]);
+  const baseUnitCost = getP('out_' + state.outerChoice, prod.outerPrices[state.outerChoice]);
+  const baseCost = baseUnitCost * bQty;
   let equipmentTotal = baseCost;
+
+  // Доплата за цветной профлист на БК
+  if (isBk && state.outerChoice === 'prof' && state.profColor !== 'Оцинкованный') {
+    equipmentTotal += getP('bk_prof_color', 7000) * bQty;
+  }
 
   // Каркас
   if (!isBk && state.frameType === 'frame_100') {
-    equipmentTotal += getP('frame_100', prod.frameUpgradePrice);
+    equipmentTotal += getP('frame_100', prod.frameUpgradePrice) * frQty;
   }
   
   // ВНУТРИ
   const innerTpl = INNER_OPTIONS_TEMPLATES.find(t => t.id === state.innerChoice);
   if (innerTpl.priceProp !== 0) {
-    equipmentTotal += getP(innerTpl.id, prod.innerPricesMap[innerTpl.priceProp] || 0);
+    equipmentTotal += getP(innerTpl.id, prod.innerPricesMap[innerTpl.priceProp] || 0) * inQty;
   } else if (innerTpl.id === 'in_none') {
-    equipmentTotal += getP(innerTpl.id, -4000);
+    equipmentTotal += getP(innerTpl.id, -4000) * inQty;
   }
 
   // УТЕПЛЕНИЕ
   if (state.insulation === 'ins100') {
     const calcIns100Price = getDefaultIns100Price(prod);
-    equipmentTotal += getP('ins100', calcIns100Price);
+    equipmentTotal += getP('ins100', calcIns100Price) * insQ;
   } else if (state.insulation === 'rock50') {
-    equipmentTotal += getP('rock50', prod.insulationPrices.rock50);
+    equipmentTotal += getP('rock50', prod.insulationPrices.rock50) * insQ;
   }
 
   ALL_EXTRAS.forEach(srv => {
@@ -1508,7 +1596,8 @@ function rebuildModalText() {
   }
 
   if (state.extrasChecked['assembly_site']) {
-    let assemblyPrice = isBk ? Math.round(equipmentTotal * 0.5) : Math.round(baseCost * 0.27);
+    const asmQty = state.extrasQty['assembly_site'] || 1;
+    let assemblyPrice = isBk ? Math.round(equipmentTotal * 0.5) * asmQty : Math.round(baseCost * 0.27) * asmQty;
     equipmentTotal += assemblyPrice;
   }
 
@@ -1527,7 +1616,7 @@ function rebuildModalText() {
   const optData = OUTER_NAMES[state.outerChoice];
   let outerDescText = optData.name;
   if (optData.isProf) {
-    outerDescText += ` (Цвет: ${state.profColor}), ${isBk ? 'цвет уголков' : 'косынки'}: ${state.cornersColor}`;
+    outerDescText += ` (Цвет: ${state.profColor}), ${isBk ? 'цвет уголков' : 'косынки'}: ${state.cornersColor || 'не указан'}`;
   }
   if (optData.isWood) {
     outerDescText += ` [Антисептик: ${state.antisepticColor}]`;
@@ -1544,7 +1633,7 @@ function rebuildModalText() {
   } else if (hasPVC) {
     windowText = "ПВХ (согласно выбранным допам)";
   } else {
-    windowText = "75х75 см деревянное с двойным остеклением (1 шт.)";
+    windowText = `75х75 см деревянное с двойным остеклением (${bQty} шт.)`;
   }
 
   let insulText = (state.insulation === 'rock50') ? 'Каменная вата (плитами) 50 мм' : ((state.insulation === 'ins100') ? '100 мм' : '50 мм');
@@ -1552,32 +1641,40 @@ function rebuildModalText() {
 
   const isRasp = document.getElementById('is_raspashonka') && document.getElementById('is_raspashonka').checked;
 
-  // Формируем единый массив особенностей (допов) для заявок
+  // Формируем единый массив особенностей (допов) для заявок без тире/черточек
   let extrasList = [];
+  if (bQty > 1) {
+    extrasList.push(`❗ Количество модулей: ${bQty} шт.`);
+  }
   if (isRasp) {
     extrasList.push(`❗ Планировка: РАСПАШОНКА`);
   }
+  if (isBk && state.outerChoice === 'prof' && state.profColor !== 'Оцинкованный') {
+    extrasList.push(`❗ Цветной профлист (${state.profColor}) ${bQty > 1 ? `(${bQty} шт.)` : ''}`);
+  }
   if (!isBk && state.frameType === 'frame_100') {
-    extrasList.push(`❗ Каркас: 100х50 из бруса (усиленный)`);
+    extrasList.push(`❗ Каркас: 100х50 из бруса (усиленный) ${frQty > 1 ? `(${frQty} шт.)` : ''}`);
   }
   if (state.innerChoice !== 'in_org') {
-    extrasList.push(`❗ Внутренняя отделка: ${innerTpl.name}`);
+    extrasList.push(`❗ Внутренняя отделка: ${innerTpl.name} ${inQty > 1 ? `(${inQty} шт.)` : ''}`);
   }
   if (state.insulation === 'ins100' && state.innerChoice !== 'in_none') {
-    extrasList.push(`❗ Утепление: 100 мм минеральной ватой (пол, стены, потолок)`);
+    extrasList.push(`❗ Утепление: 100 мм минеральной ватой (пол, стены, потолок) ${insQ > 1 ? `(${insQ} шт.)` : ''}`);
   } else if (state.insulation === 'rock50' && state.innerChoice !== 'in_none') {
-    extrasList.push(`❗ Утепление: Каменная вата (плитами) 50 мм (пол, стены, потолок)`);
+    extrasList.push(`❗ Утепление: Каменная вата (плитами) 50 мм (пол, стены, потолок) ${insQ > 1 ? `(${insQ} шт.)` : ''}`);
   }
   if (hasExtraWoodWin) {
-    extrasList.push(`❗ Окно 75х75 см деревянное с двойным остеклением — ${1 + extraWoodWinQty} шт.`);
+    extrasList.push(`❗ Окно 75х75 см деревянное с двойным остеклением (${bQty + extraWoodWinQty} шт.)`);
   }
   ALL_EXTRAS.forEach(s => {
     if (s.id === 'height_increase' && isBk) return;
     if (s.id === 'win_wood_extra') return;
     if (state.extrasChecked[s.id]) {
-      extrasList.push(`❗ ${s.name} — ${state.extrasQty[s.id] || 1} шт.`);
+      extrasList.push(`❗ ${s.name} (${state.extrasQty[s.id] || 1} шт.)`);
     }
   });
+
+  const totalBlocksGift = prod.blocksGift * bQty;
 
   if (type === 'prod') {
     text += `Заявка на ${dateVal}\n`;
@@ -1590,7 +1687,7 @@ function rebuildModalText() {
       text += `Доставка: самовывоз\n\n`;
     }
     
-    text += `Новая ${prod.name} ${isRasp ? '(РАСПАШОНКА)' : ''}\n`;
+    text += `Новая ${prod.name} ${isRasp ? '(РАСПАШОНКА)' : ''} ${bQty > 1 ? `(${bQty} шт.)` : ''}\n`;
     text += `Внутренний размер: ${prod.innerDim}\n\n`;
 
     if (!isBk) {
@@ -1603,16 +1700,16 @@ function rebuildModalText() {
       text += `6. Пол: Двойной (доска + ОСБ)\n`;
       text += `7. Крыша: двускатная, оцинкованный профлист 0,3 мм\n`;
       text += `8. Окна: ${windowText}\n`;
-      text += `9. Дверь входная: 1,80х80 см деревянная каркасная (1 шт.)\n\n`;
+      text += `9. Дверь входная: 1,80х80 см деревянная каркасная (${bQty} шт.)\n\n`;
     } else {
       text += `Характеристики стандартного блок-контейнера:\n`;
-      text += `• Каркас сварной: швеллер 100х50х3мм, стойки - уголок 63х63х3мм\n`;
+      text += `• Каркас сварной: швеллер 100х50х3мм, стойки уголок 63х63х3мм\n`;
       text += `• Внешняя отделка: ${outerDescText}\n`;
       text += `• Внутренняя отделка: ${innerTpl.name}\n`;
       text += `• Пол: Двойной (доска + ОСБ)\n`;
       text += `• Крыша всегда прямая: листовая сталь толщиной 0,6 мм\n`;
       text += `• Окно: ${windowText}\n`;
-      text += `• Дверь деревянная 1,90х80 см (1 шт.)\n`;
+      text += `• Дверь деревянная 1,90х80 см (${bQty} шт.)\n`;
       text += `• Утепление: ${insulText}\n`;
       text += `• Пароизоляция: Пароизоляция (пол, стены, потолок)\n\n`;
     }
@@ -1621,13 +1718,12 @@ function rebuildModalText() {
       text += `Особенности комплектации (допы):\n` + extrasList.join('\n') + `\n\n`;
     }
 
-    text += `В комплекте:\n- фундаментные блоки 20х20х40 см — ${prod.blocksGift} шт.\n- ступени для входа\n`;
+    text += `В комплекте:\n• фундаментные блоки 20х20х40 см (${totalBlocksGift} шт.)\n• ступени для входа\n`;
     if (state.deliveryRegion === 'ovrazhki') {
-      text += `- электрика: розетка, выключатель, патрон и провод (без подключения)\n`;
+      text += `• электрика: розетка, выключатель, патрон и провод (без подключения)\n`;
     }
     text += `\n`;
 
-    text += `---\n`;
     text += `Стоимость бытовки: ${equipmentTotal.toLocaleString('ru-RU')} руб.\n`;
     text += `Стоимость доставки: ${deliveryCost.toLocaleString('ru-RU')} руб.\n`;
     text += `Итого: ${total.toLocaleString('ru-RU')} руб.\n\n`;
@@ -1640,9 +1736,9 @@ function rebuildModalText() {
       text += `${balance.toLocaleString('ru-RU')} руб. оплата водителю НАЛИЧНЫМИ\n\n`;
     }
     
-    text += `Заказчик: ${cName ? cName : '—'}\n`;
-    text += `Телефон: ${cPhone ? cPhone : '—'}\n`;
-    text += `Адрес объекта: ${cAddr ? cAddr : '—'}\n\n`;
+    text += `Заказчик: ${cName}\n`;
+    text += `Телефон: ${cPhone}\n`;
+    text += `Адрес объекта: ${cAddr}\n\n`;
     
     text += `Планировка: подтверждена и прилагается\n`;
     text += `Заезд: свободный со слов клиента. Фото и видео прилагается\n\n`;
@@ -1651,7 +1747,7 @@ function rebuildModalText() {
   } else {
     /* ЗАЯВКА ДЛЯ КЛИЕНТА */
     text += `Заявка на ${dateVal}\n\n`;
-    text += `Новая ${prod.name} ${isRasp ? '(РАСПАШОНКА)' : ''}\n`;
+    text += `Новая ${prod.name} ${isRasp ? '(РАСПАШОНКА)' : ''} ${bQty > 1 ? `(${bQty} шт.)` : ''}\n`;
     text += `Внутренний размер: ${prod.innerDim}\n\n`;
 
     if (!isBk) {
@@ -1664,16 +1760,16 @@ function rebuildModalText() {
       text += `6. Пол: Двойной (доска + ОСБ)\n`;
       text += `7. Крыша: двускатная, оцинкованный профлист 0,3 мм (односкатная по запросу)\n`;
       text += `8. Окна: ${windowText}\n`;
-      text += `9. Дверь входная: 1,80х80 см деревянная каркасная (1 шт.)\n\n`;
+      text += `9. Дверь входная: 1,80х80 см деревянная каркасная (${bQty} шт.)\n\n`;
     } else {
       text += `Характеристики стандартного блок-контейнера:\n`;
-      text += `• Каркас сварной: швеллер 100х50х3мм, стойки - уголок 63х63х3мм\n`;
+      text += `• Каркас сварной: швеллер 100х50х3мм, стойки уголок 63х63х3мм\n`;
       text += `• Внешняя отделка: ${outerDescText}\n`;
       text += `• Внутренняя отделка: ${innerTpl.name}\n`;
       text += `• Пол: Двойной (доска + ОСБ)\n`;
       text += `• Крыша всегда прямая: листовая сталь толщиной 0,6 мм\n`;
       text += `• Окно: ${windowText}\n`;
-      text += `• Дверь деревянная 1,90х80 см (1 шт.)\n`;
+      text += `• Дверь деревянная 1,90х80 см (${bQty} шт.)\n`;
       text += `• Утепление: ${insulText}\n`;
       text += `• Пароизоляция: Пароизоляция (пол, стены, потолок)\n\n`;
     }
@@ -1682,13 +1778,12 @@ function rebuildModalText() {
       text += `Особенности комплектации (допы):\n` + extrasList.join('\n') + `\n\n`;
     }
 
-    text += `В комплекте:\n- фундаментные блоки 20х20х40 см — ${prod.blocksGift} шт.\n- ступени для входа\n`;
+    text += `В комплекте:\n• фундаментные блоки 20х20х40 см (${totalBlocksGift} шт.)\n• ступени для входа\n`;
     if (state.deliveryRegion === 'ovrazhki') {
-      text += `- электрика: розетка, выключатель, патрон и провод (без подключения)\n`;
+      text += `• электрика: розетка, выключатель, патрон и провод (без подключения)\n`;
     }
     text += `\n`;
 
-    text += `---\n`;
     text += `Итого: ${total.toLocaleString('ru-RU')} руб.\n\n`;
     
     if (state.taxMode === '13' || state.taxMode === '22') {
